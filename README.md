@@ -128,7 +128,7 @@ exec cat "$1" | w3m -T text/html -dump -cols 120
 exec cat "$1" | w3m -T text/html -dump -cols 120
 ```
 
-##*.epub)
+## *.epub)
 ```
 exec unzip -qc "$1" "*.*htm*" |  w3m -T text/html -dump -cols 120
 ```
