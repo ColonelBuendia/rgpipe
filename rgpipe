@@ -1,0 +1,60 @@
+#!/bin/sh
+# thisdoes: working version of rgpre
+# ~~both regex and html follow, sorry not~~ sorry
+#alias rgg="rg -i -z --max-columns-preview --max-columns 900 --hidden --no-ignore --pre-glob '*.{pdf,xl[tas][bxm],xl[wsrta],do[ct],do[ct][xm],p[po]t[xm],p[op]t,html,epub,chm}' --pre rgpre"
+# ubuntu wants: sudo apt-get poppler-utils, p7zip, w3m
+# termux wants: pkg install poppler, p7zip, w3m
+case "$1" in
+*.pdf)
+   exec pdftotext -layout "$1" -
+   ;;
+*.xl[ast][xmt])
+   exec unzip -qc "$1" *.xml |  sed -e 's/<\/[vft]>/\n/g; s/<[^>]\{1,\}>//g; s/[^[:print:]\n]\{1,\}//g'
+   ;;
+*.xlsb)
+   unzip -qc "$1" *.bin |  strings -e l
+   ;;
+*.xl[wsrta])
+   exec strings  "$1"
+   ;;
+*.do[ct])
+   exec strings -d -15 "$1"
+   ;;
+*.do[tc][xm])
+   exec unzip -qc "$1" word/document.xml | sed -e 's/<\/w:p>/\n/g; s/<[^>]\{1,\}>//g; s/[^[:print:]\n]\{1,\}//g'
+   ;;
+*.p[po]t)
+   exec strings -d "$1"
+   ;;
+*.p[po]t[xm])
+   exec unzip -qc "$1" ppt/slides/*.xml | sed -e 's/<\/a:t>/\n/g; s/<[^>]\{1,\}>//g; s/[^[:print:]\n]\{1,\}//g'
+   ;;
+*.xhtm)
+   exec cat "$1" | w3m -T text/html -dump -cols 120
+   ;;
+*.xhtml)
+   exec cat "$1" | w3m -T text/html -dump -cols 120
+   ;;
+*.htm)
+   exec cat "$1" | w3m -T text/html -dump -cols 120
+   ;;
+*.html)
+   exec cat "$1" | w3m -T text/html -dump -cols 120
+   ;;
+*.epub)
+   exec unzip -qc "$1" "*.*htm*" |  w3m -T text/html -dump -cols 120
+   ;;
+*.chm)
+   exec 7z e -r -so "$1" *.htm *.xml *.htm *.html *.xhtm *.xhtml | w3m -T text/html -dump -cols 120
+   ;;
+*)
+   case $(file "$1") in
+   *Zstandard*)
+       exec pzstd -cdq
+       ;;
+   *)
+       exec cat
+       ;;
+   esac
+   ;;
+esac
