@@ -8,6 +8,7 @@ That gist is only useful because of the kind note by BurntSushi in [this hacker 
 # Requires
 
 ubuntu wants: sudo apt-get poppler-utils, p7zip, w3m
+
 termux wants: pkg install poppler, p7zip, w3m
 
 
