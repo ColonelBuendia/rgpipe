@@ -16,7 +16,7 @@ termux wants: pkg install poppler, p7zip, w3m
 
 ## Vanilla usage
 ```
-rgpipe yourfilehere.xlxs
+rgpipe yourfilehere.xlsx
 ```
 
 ## Ripgrep usage
