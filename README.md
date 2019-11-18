@@ -20,8 +20,12 @@ rgpipe yourfilehere.xlsx
 ```
 
 ## Ripgrep usage
+The pre-glob keeps ripgrep from being bogged down by applying rgpipe, the pre command helper script, to things that don't match the specified rules.  
+
+```
 alias rgg="rg -i -z -L --max-columns 2500 --hidden --no-ignore \
 --pre-glob '*.{pdf,xl[tas][bxm],xl[wsrta],do[ct],do[ct][xm],p[po]t[xm],p[op]t,html,htm,xhtm,xhtml,epub,chm}' --pre rgpipe"
+```
 
 ## Rippgrep make a folder of crap searchable usage
 aka poors mans's full text index
