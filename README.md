@@ -175,4 +175,4 @@ Regex was mixed with html in earlier versions of this script, it may be again in
 
 5 - [rga](https://github.com/phiresky/ripgrep-all) is a rust based tool that also references my original gist (yay!)
 
-6 - Some [notes](https://github.com/obriensp/iWorkFileFormat/blob/master/Docs/index.md#snappy-compression) on [keynote files] (https://github.com/kubo/snzip/issues/14)
+6 - Some [notes](https://github.com/obriensp/iWorkFileFormat/blob/master/Docs/index.md#snappy-compression) on [keynote files](https://github.com/kubo/snzip/issues/14)
