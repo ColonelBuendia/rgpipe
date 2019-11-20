@@ -141,9 +141,14 @@ exec unzip -qc "$1" "*.*htm*" |  w3m -T text/html -dump -cols 120
 ```
 exec 7z e -r -so "$1" *.htm *.xml *.htm *.html *.xhtm *.xhtml | w3m -T text/html -dump -cols 120
 ```
+## *.key)
+This is Apple's keynote format.  This is not implemented in the script because this currently works poorly (hitting the relevant iwa files with strings, use someting like Snzip to do it right). Note the format has varied over time without changing extension, and that key files are often otherwise greppable text files in other contexts.  
+```
+ unzip -qc "$1" */Slide* */*/Data | strings -n 13
+```
 
 ## mobi
-A simple way is to use [this script](https://github.com/kevinhendricks/KindleUnpack/archive/v032.zip) but it writes to disk so I don't really.
+A simple way is to use [this script](https://github.com/kevinhendricks/KindleUnpack/archive/v032.zip) but it writes to disk so I don't really. Any notes on how to do this using the existing tools here would be highly appreciated.  
 
 ## Easy things to add if need be
 All the open office / libreoffice file types are not very different from the ms file types.
@@ -162,3 +167,5 @@ catdoc, catppt, xls2csv, xlsx2csv
 4 - [lesspipe of course](https://github.com/wofr06/lesspipe)
 
 5 - [rga](https://github.com/phiresky/ripgrep-all) is a rust based tool that also references my original gist (yay!)
+
+6 - Some [notes](https://github.com/obriensp/iWorkFileFormat/blob/master/Docs/index.md#snappy-compression) on [keynote files] (https://github.com/kubo/snzip/issues/14)
