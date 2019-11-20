@@ -7,9 +7,11 @@ That gist is only useful because of the kind note by BurntSushi in [this hacker 
 
 # Requires
 
-ubuntu wants: sudo apt-get poppler-utils, p7zip, w3m
+ubuntu wants: sudo apt-get poppler-utils p7zip w3m
 
-termux wants: pkg install poppler, p7zip, w3m
+termux wants: pkg install poppler p7zip w3m
+
+assumes you already have: unzip, strings
 
 
 # Usage notes
@@ -155,6 +157,11 @@ All the open office / libreoffice file types are not very different from the ms 
 
 # Superior tools to transform to to text but extra dependencies so eh
 catdoc, catppt, xls2csv, xlsx2csv
+
+# Sorry not sorry
+Redundant cat usage makes things easier to read 
+
+Regex was mixed with html in earlier versions of this script, it may be again in the future  
 
 # Super useful
 
