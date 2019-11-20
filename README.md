@@ -1,6 +1,6 @@
 rgpipe is a single bash/sh script and an alias to use with ripgrep to search through a myriad of file types that are otherwise not grep friendy.  Here mostly newish ms office things without using too many other programs.  rgpipe because the idea is similar to lesspipe.  Use it with ripgrep's -pre command which is a preprocessor that allows ripgrep to selectively do something to a file before searching it. It works with other tools as well, namely less.
 
-I wrote up an extended gist about how to use it here
+I wrote up an extended gist about how to use it
 [here](https://gist.github.com/ColonelBuendia/314826e37ec35c616d70506c38dc65aa)
 
 That gist is only useful because of the kind note by BurntSushi in [this hacker news comment](https://news.ycombinator.com/item?id=19675934) explaining how ```rg --pre-glob``` works.
