@@ -1,9 +1,10 @@
 #!/bin/sh
 # thisdoes: working version of rgpre
-# ~~both regex and html follow, sorry not~~ sorry
-#alias rgg="rg -i -z --max-columns-preview --max-columns 900 --hidden --no-ignore --pre-glob '*.{pdf,xl[tas][bxm],xl[wsrta],do[ct],do[ct][xm],p[po]t[xm],p[op]t,html,epub,chm}' --pre rgpre"
-# ubuntu wants: sudo apt-get poppler-utils, p7zip, w3m
-# termux wants: pkg install poppler, p7zip, w3m
+# ColonelBuendia was here, 2019-11-20
+# ~~both regex and html follow, sorry not sorry ~~
+# alias rgg="rg -i -z --max-columns-preview --max-columns 500 --hidden --no-ignore --pre-glob *.{pdf,xl[tas][bxm],xl[wsrta],do[ct],do[ct][xm],p[po]t[xm],p[op]t,html,htm,xhtm,xhtml,epub,chm,od[stp]}' --pre rgpipe"
+# ubuntu wants: sudo apt-get poppler-utils p7zip w3m
+# termux wants: pkg install poppler p7zip w3m
 case "$1" in
 *.pdf)
    exec pdftotext -layout "$1" -
@@ -46,6 +47,9 @@ case "$1" in
    ;;
 *.chm)
    exec 7z e -r -so "$1" *.htm *.xml *.htm *.html *.xhtm *.xhtml | w3m -T text/html -dump -cols 120
+   ;;
+*.od[stp])
+  exec unzip -qc "$1" *.xml |  sed -e 's/<\/text:p>/\n/g; s/<[^>]\{1,\}>//g; s/[^[:print:]\n]\{1,\}//g'
    ;;
 *)
    case $(file "$1") in
