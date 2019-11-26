@@ -7,7 +7,7 @@
 # termux wants: pkg install poppler p7zip w3m
 case "$1" in
 *.pdf)
-   exec pdftotext -layout "$1" -
+   exec pdftotext -q -layout "$1" -
    ;;
 *.xl[ast][xmt])
    exec unzip -qc "$1" *.xml |  sed -e 's/<\/[vft]>/\n/g; s/<[^>]\{1,\}>//g; s/[^[:print:]\n]\{1,\}//g'
