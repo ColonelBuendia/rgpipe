@@ -1,5 +1,4 @@
-rgpipe is a single bash/sh script and an alias to use with ripgrep to search through a myriad of file types that are otherwise not grep friendy.  
-rgpipe because the idea is similar to lesspipe.  
+```rgpipe``` is a single bash/sh script and an alias to use with ripgrep to search through a myriad of file types that are otherwise not grep friendy.  ```rgpipe``` because the idea is similar to lesspipe.  
 Use it with ripgrep's -pre command which allows ripgrep to selectively process files before searching
 
 
@@ -9,20 +8,22 @@ I wrote up an extended gist about how to use it
 That gist is only useful because of the kind note by BurntSushi in [this hacker news comment](https://news.ycombinator.com/item?id=19675934) explaining how ```rg --pre-glob``` works.
 
 ## This helps grep through:
-- Old MS Office files (doc,ppt,xls,variants thereof like templates and add ins)
-- New MS Office files (docx,pptx,xlsx, variants thereof, new excel binary format)
-- LibreOffice files (ods,odt,odp)
-- PDF
-- Web/structured formats (html, xhtml ...)
-- Web formats disguised as books (chm, epub)
+- New MS Office files (docx,pptx,xlsx, variants thereof)  
+    + Uses ```unzip``` and ```sed```
+- Old MS Office files (doc,ppt,xls,variants thereof) & new excel binary format
+    + Uses ```strings```
+- LibreOffice files (ods,odt,odp)  
+    + Uses ```unzip``` and ```sed```
+- PDF  
+    + Uses ```pdftottext``` from poppler
+- Web/structured formats (html, xhtml ...)  
+    + Uses ```w3m``` lynx and friends also works.  Not 100% neccesary.  
+- Web formats disguised as books (chm, epub)  
+    + ```unzip``` and ```w3m``` for epub
+    + ```7zip``` and ```w3m``` for chm
 
 
-# Used 
-All the office file types use unzip, sed, and/or strings.  
-PDF uses poppler's pdftottext.  
-CHM requires 7zip to open.  
-For html (htm,html,xhtml) this uses w3m, but lynx and friends do the same. Not 100% neccesary, but nice.  
-There are some notes at the top of the script for other random usages.    
+### Specifically
 Ubuntu wants: sudo apt install poppler-utils p7zip w3m  
 termux wants: pkg install poppler p7zip w3m  
 
