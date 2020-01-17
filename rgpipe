@@ -9,6 +9,28 @@
 # alias rgi="rg -i -z --max-columns-preview --max-columns 500 --hidden --no-ignore --pre-glob \
 # '*.{pdf,xl[tas][bxm],xl[wsrta],do[ct],do[ct][xm],p[po]t[xm],p[op]t,html,htm,xhtm,xhtml,epub,chm,od[stp]}' --pre rgpipe"
 #
+# note to self re: less usage
+# export LESSOPEN="|/home/sanchopanda/scripts/rgpipe %s"
+# LESSOPEN="|lesspipe.sh %s"
+#
+# note to self re: fzf usage
+# f-cd() { cd $( dirname "$(locate -i "$1" | fzf --preview 'rg -iz --pre rgpipe . {} | head -n 100')") ; }
+# f-less() { less `locate -i "$1" | fzf --preview 'rg -iz --pre rgpipe . {} | head -n 100'`; }
+# f-subl() { subl `locate -i "$1" | fzf --preview 'rg -iz --pre rgpipe . {} | head -n 100'`; }
+#
+# note to self re: mobi files
+# A simple way is to use [this script](https://github.com/kevinhendricks/KindleUnpack/archive/v032.zip) but it writes to disk so I don't really. 
+# Any notes on how to do this using the existing tools here would be highly appreciated.  
+#
+# note to self re: key files as in apple keynote
+# Use someting like Snzip to do it right. Note the format has varied over time without changing extension, and that key files are often otherwise greppable text files in other contexts.  
+# garbage methord:  unzip -qc "$1" */Slide* */*/Data | strings -n 13
+#Some [notes](https://github.com/obriensp/iWorkFileFormat/blob/master/Docs/index.md#snappy-compression) on [keynote files](https://github.com/kubo/snzip/issues/14)
+#
+# Superior tools for more robust usage when doing that 
+# catdoc, catppt, xls2csv, xlsx2csv, ods2txt, ebook-convert, ssconvert, in2csv, html2csv(pip3 html-to-csv), psc
+#
+
 case "$1" in
 *.pdf)
    exec pdftotext -q -layout "$1" -
