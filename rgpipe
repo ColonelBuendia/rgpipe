@@ -1,10 +1,14 @@
 #!/bin/sh
+#
 # thisdoes: working version of rgpre
-# ColonelBuendia was here, 2019-11-20
-# ~~both regex and html follow, sorry not sorry ~~
-# alias rgg="rg -i -z --max-columns-preview --max-columns 500 --hidden --no-ignore --pre-glob *.{pdf,xl[tas][bxm],xl[wsrta],do[ct],do[ct][xm],p[po]t[xm],p[op]t,html,htm,xhtm,xhtml,epub,chm,od[stp]}' --pre rgpipe"
-# ubuntu wants: sudo apt-get poppler-utils p7zip w3m
-# termux wants: pkg install poppler p7zip w3m
+# ColonelBuendia was here, 2019-11-20, also later
+#
+# ubuntu wants: poppler-utils p7zip w3m
+# termux wants: poppler p7zip w3m
+#
+# alias rgi="rg -i -z --max-columns-preview --max-columns 500 --hidden --no-ignore --pre-glob \
+# '*.{pdf,xl[tas][bxm],xl[wsrta],do[ct],do[ct][xm],p[po]t[xm],p[op]t,html,htm,xhtm,xhtml,epub,chm,od[stp]}' --pre rgpipe"
+#
 case "$1" in
 *.pdf)
    exec pdftotext -q -layout "$1" -
@@ -31,13 +35,13 @@ case "$1" in
    exec unzip -qc "$1" ppt/slides/*.xml | sed -e 's/<\/a:t>/\n/g; s/<[^>]\{1,\}>//g; s/[^[:print:]\n]\{1,\}//g'
    ;;
 *.xhtm)
-   exec cat "$1" | w3m -T text/html -dump -cols 120
+   w3m -T text/html -dump -cols 120 "$1"
    ;;
 *.xhtml)
-   exec cat "$1" | w3m -T text/html -dump -cols 120
+   w3m -T text/html -dump -cols 120 "$1"
    ;;
 *.htm)
-   exec cat "$1" | w3m -T text/html -dump -cols 120
+   w3m -T text/html -dump -cols 120 "$1"
    ;;
 *.html)
    exec cat "$1" | w3m -T text/html -dump -cols 120
@@ -54,10 +58,10 @@ case "$1" in
 *)
    case $(file "$1") in
    *Zstandard*)
-       exec pzstd -cdq
+       exec pzstd -cdq "$1"
        ;;
    *)
-       exec cat
+       exec cat "$1"
        ;;
    esac
    ;;
