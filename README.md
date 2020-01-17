@@ -1,4 +1,7 @@
-rgpipe is a single bash/sh script and an alias to use with ripgrep to search through a myriad of file types that are otherwise not grep friendy.  rgpipe because the idea is similar to lesspipe.  Use it with ripgrep's -pre command which allows ripgrep to selectively do something to a file before searching it. It works with other tools as well, namely less.
+rgpipe is a single bash/sh script and an alias to use with ripgrep to search through a myriad of file types that are otherwise not grep friendy.  
+rgpipe because the idea is similar to lesspipe.  
+Use it with ripgrep's -pre command which allows ripgrep to selectively process files before searching
+
 
 I wrote up an extended gist about how to use it
 [here](https://gist.github.com/ColonelBuendia/314826e37ec35c616d70506c38dc65aa)
@@ -13,174 +16,51 @@ That gist is only useful because of the kind note by BurntSushi in [this hacker 
 - Web/structured formats (html, xhtml ...)
 - Web formats disguised as books (chm, epub)
 
-There are some notes below on mobi and keynote files
 
-# Requires
-You likely already have but doublecheck: unzip, sed, strings
-
-ubuntu wants: sudo apt-get poppler-utils p7zip w3m
-
-termux wants: pkg install poppler p7zip w3m
-
-why?
-
-poppler is where you get pdftotext, p7zip is for chm files - unzip wont open them and w3m has superior support for tables and impromptu data extraction
+# Used 
+All the office file types use unzip, sed, and/or strings.  
+PDF uses poppler's pdftottext.  
+CHM requires 7zip to open.  
+For html (htm,html,xhtml) this uses w3m, but lynx and friends do the same. Not 100% neccesary, but nice.  
+There are some notes at the top of the script for other random usages.    
+Ubuntu wants: sudo apt install poppler-utils p7zip w3m  
+termux wants: pkg install poppler p7zip w3m  
 
 
 # Usage notes
 
-## Vanilla usage
+## Vanilla ripgrep usage
+Assuming rgpipe is in path, use /path/to/rgpipe if it's not
 ```
-rgpipe yourfilehere.xlsx
+rg --pre rgpipe YourSearchTermHere
 ```
-
-## Ripgrep usage
-The pre-glob keeps ripgrep from being bogged down by applying rgpipe, the pre command helper script, to things that don't match the specified rules.  
-
+## Better ripgrep usage
+Above uses rgpipe even when it's not needed, which is slow, ripgrep can selectively use it with --pre-glob
+```
+rg --pre-glob '*.{xlsx,pptx,docx,pdf}' --pre rgpipe YourSearchTermHere
+```
+A more thorough pre glob:
+```
+rg --pre-glob '*.{pdf,xl[tas][bxm],xl[wsrta],do[ct],do[ct][xm],p[po]t[xm],p[op]t,html,htm,xhtm,xhtml,epub,chm,od[stp]}' --pre rgpipe YourSearchTermHere
+```
+An alias because that is alot of typing
 ```
 alias rgg="rg -i -z --max-columns-preview --max-columns 500 --hidden --no-ignore --pre-glob \
 '*.{pdf,xl[tas][bxm],xl[wsrta],do[ct],do[ct][xm],p[po]t[xm],p[op]t,html,htm,xhtm,xhtml,epub,chm,od[stp]}' --pre rgpipe"
 ```
 
-## Rippgrep make a folder of crap searchable usage
-aka poors mans's full text index
+## Poors mans's full text search
 
-Make a script called rgindex.sh
+Step 1: use rgpipe to make text sidecar files
 ```
-#!/bin/sh
-rg -i -z --no-line-number --heading --hidden --no-ignore --pre rgpipe "" "$1" > "$1".txt
-```
-then run it on your folder however you want leaving you with text files adjacent to your other files which are easy to grep
-```
-find /home/mike/mdoc/Investing -type f -iname '*'".pdf"'' -exec rgindex.sh {} \;
-```
-
-I actually use rg for that part too usually, but the above is more legible here.
-
-## Less usage
-Less for example allows you to set some varaibles to use it with less like so
-```
-export LESSOPEN="|/home/sanchopanda/scripts/rgpipe %s"
-LESSOPEN="|lesspipe.sh %s"
-```
-## MC usage (midnight commander)
-...
-
-## fzf usage
-find a file by glancing through it and then cd to that drectory
-```
-f-cd() {
-	cd $( dirname "$(locate -i "$1" | fzf --preview 'rg -iz --pre rgpipe . {} | head -n 100')")
+findrgpipetype() {
+	 find `pwd` -type f -iname "*.$1" -exec sh -c 'for f; do rgpipe "$f" > "${f%.*}.txt"; done' _ {} +
 }
 ```
-same thing but open with less or sublime
+Step 2: Use ripgrep to search those files 
 ```
-f-less() { less `locate -i "$1" | fzf --preview 'rg -iz --pre rgpipe . {} | head -n 100'`; }
-f-subl() { subl `locate -i "$1" | fzf --preview 'rg -iz --pre rgpipe . {} | head -n 100'`; }
+rg YourSearchTermHere
 ```
-
-# Notes on file types
-
-## *.pdf)
-```
-exec pdftotext -layout "$1" -
-```
-
-## .xl[ast][xmt])
-aka new excel
-```
-exec unzip -qc "$1" *.xml |  sed -e 's/<\/[vft]>/\n/g; s/<[^>]\{1,\}>//g; s/[^[:print:]\n]\{1,\}//g'
-```
-
-## *.xlsb)
-aka new new excel
-```
-unzip -qc "$1" *.bin |  strings -e l
-```
-
-## *.xl[wsrta])
-aka old excel
-```
-exec strings  "$1"
-```
-
-## *.do[ct])
-aka old word
-```
-exec strings -d -15 "$1"
-```
-
-## *.do[tc][xm])
-aka new word
-```
-exec unzip -qc "$1" word/document.xml | sed -e 's/<\/w:p>/\n/g; s/<[^>]\{1,\}>//g; s/[^[:print:]\n]\{1,\}//g'
-```
-
-## *.p[po]t)
-aka old powerpoint
-```
-exec strings -d "$1"
-```
-
-##   *.p[po]t[xm])
-```
-exec unzip -qc "$1" ppt/slides/*.xml | sed -e 's/<\/a:t>/\n/g; s/<[^>]\{1,\}>//g; s/[^[:print:]\n]\{1,\}//g'
-```
-
-### *.xhtm)
-```
-exec cat "$1" | w3m -T text/html -dump -cols 120
-```
-
-## *.xhtml)
-```
-exec cat "$1" | w3m -T text/html -dump -cols 120
-```
-
-## *.htm)
-```
-exec cat "$1" | w3m -T text/html -dump -cols 120
-```
-
-## *.html)
-```
-exec cat "$1" | w3m -T text/html -dump -cols 120
-```
-
-## *.epub)
-```
-exec unzip -qc "$1" "*.*htm*" |  w3m -T text/html -dump -cols 120
-```
-
-## *.chm)
-```
-exec 7z e -r -so "$1" *.htm *.xml *.htm *.html *.xhtm *.xhtml | w3m -T text/html -dump -cols 120
-```
-
-## *.od[stp])
-These are the main libreoffice office filetypes
-```
-exec unzip -qc "$1" *.xml |  sed -e 's/<\/text:p>/\n/g; s/<[^>]\{1,\}>//g; s/[^[:print:]\n]\{1,\}//g'
-```
-
-## *.key)
-This is Apple's keynote format.  This is not implemented in the script because this currently works poorly (hitting the relevant iwa files with strings, use someting like Snzip to do it right). Note the format has varied over time without changing extension, and that key files are often otherwise greppable text files in other contexts.  
-```
- unzip -qc "$1" */Slide* */*/Data | strings -n 13
-```
-
-
-## mobi
-A simple way is to use [this script](https://github.com/kevinhendricks/KindleUnpack/archive/v032.zip) but it writes to disk so I don't really. Any notes on how to do this using the existing tools here would be highly appreciated.  
-
-
-# Superior tools to transform to to text but extra dependencies so eh
-catdoc, catppt, xls2csv, xlsx2csv, ods2txt, ebook-convert, ssconvert
-
-# Sorry not sorry
-Redundant cat usage makes things easier to read 
-
-Regex was mixed with html in earlier versions of this script, it may be again in the future  
 
 # Super useful
 
@@ -192,6 +72,5 @@ Regex was mixed with html in earlier versions of this script, it may be again in
 
 4 - [lesspipe of course](https://github.com/wofr06/lesspipe)
 
-5 - [rga](https://github.com/phiresky/ripgrep-all) is a rust based tool that also references my original gist (yay!)
+5 - [rga](https://github.com/phiresky/ripgrep-all) is a rust based tool doing a similair thing
 
-6 - Some [notes](https://github.com/obriensp/iWorkFileFormat/blob/master/Docs/index.md#snappy-compression) on [keynote files](https://github.com/kubo/snzip/issues/14)
