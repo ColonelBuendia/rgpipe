@@ -24,8 +24,8 @@ That gist is only useful because of the kind note by BurntSushi in [this hacker 
 
 
 ### Specifically
-Ubuntu wants: sudo apt install poppler-utils p7zip w3m  
-termux wants: pkg install poppler p7zip w3m  
+Ubuntu wants: `sudo apt install poppler-utils p7zip w3m unzip`
+termux wants: `pkg install poppler p7zip w3m`
 
 
 # Usage notes
